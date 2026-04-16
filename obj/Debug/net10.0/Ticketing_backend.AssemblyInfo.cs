@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Ticketing_backend")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+af5f55eaf419082f50702ab2a5a6ecc663b9cbaa")]
 [assembly: System.Reflection.AssemblyProductAttribute("Ticketing_backend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Ticketing_backend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

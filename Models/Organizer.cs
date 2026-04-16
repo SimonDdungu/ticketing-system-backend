@@ -5,19 +5,21 @@ public class Organizer
 {
     public Guid Id {get; set;} = Guid.NewGuid();
 
-    [Required]
-    public string Name {get; set; } = string.Empty;
+    [MaxLength(100)]
+    public required string Name {get; set; }
 
-    [Required]
-    public string Email {get; set;} = string.Empty;
+    [EmailAddress]
+    public required string Email {get; set;} 
 
     public string? PhoneNumber {get; set;}
 
+    [MaxLength(200)]
     public string? Bio {get; set;}
 
-    public string? Logo_url {get; set;}
+    public string? LogoUrl {get; set;}
 
     public DateTime CreatedAt {get; set;} = DateTime.UtcNow;
 
     public DateTime UpdatedAt {get; set;} = DateTime.UtcNow;
+
 }
