@@ -11,7 +11,7 @@ public class EventImage
     [ForeignKey(nameof(EventId))]
     public Event? Event {get; set;}
 
-    public string? Image {get; set;}
+    public string? Image_url {get; set;}
 
     public required bool? IsPrimary {get; set;}
 
