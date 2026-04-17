@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
+using Ticketing_backend.Models.Events;
 using Ticketing_backend.Models.Orders;
 namespace Ticketing_backend.Models.Tickets;
 
@@ -7,6 +8,12 @@ namespace Ticketing_backend.Models.Tickets;
 public class Ticket
 {
     public Guid Id { get; set; } = Guid.NewGuid();
+
+    public required Guid TicketTypeId { get; set; } 
+    public TicketType? TicketType { get; set; }
+
+    public required Guid EventId { get; set; }
+    public Event? Event { get; set; }
 
     public required Guid OrderItemId { get; set; }
     public OrderItem? OrderItem { get; set; }
@@ -18,4 +25,6 @@ public class Ticket
     public DateTime? ScannedAt { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    public DateTime UpdatedAt {get; set;} = DateTime.UtcNow;
 }
