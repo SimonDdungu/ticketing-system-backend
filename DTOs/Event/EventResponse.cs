@@ -9,6 +9,11 @@ public class EventResponse
     public string Venue { get; set; } = string.Empty;
     public double? Latitude { get; set; }
     public double? Longitude { get; set; }
+
+    public string PosterUrl {get; set;} = string.Empty;
+
+    public List<EventImageResponse> Images { get; set; } = [];
+
     public DateTime Start { get; set; }
     public DateTime End { get; set; }
     public DateTime CreatedAt { get; set; }
