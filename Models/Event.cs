@@ -14,18 +14,17 @@ public class Event
     [MaxLength(200)]
     public required string Title {get; set;}
 
-    [MaxLength(400)]
+    [MaxLength(500)]
     public required string Description {get; set;}
 
+    [MaxLength(255)]
     public required string Venue {get; set;}
 
     public double? Latitude {get; set;} 
 
     public double? Longitude {get; set;} 
 
-
     public required DateTime Start {get; set;}
-
 
     public required DateTime End {get; set;}
 

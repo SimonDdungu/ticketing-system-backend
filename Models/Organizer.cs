@@ -11,9 +11,10 @@ public class Organizer
     [EmailAddress]
     public required string Email {get; set;} 
 
+    [MaxLength(15)]
     public string? PhoneNumber {get; set;}
 
-    [MaxLength(200)]
+    [MaxLength(500)]
     public string? Bio {get; set;}
 
     public string? LogoUrl {get; set;}
