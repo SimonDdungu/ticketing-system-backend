@@ -21,7 +21,7 @@ public class CreateEventRequest
     public double? Latitude { get; set; }
     public double? Longitude { get; set; }
 
-    public string? Poster_url {get; set;}
+    public string? PosterUrl {get; set;}
 
     [Required(ErrorMessage = "Start date and time for event is required.")]
     public required DateTime Start { get; set; }
