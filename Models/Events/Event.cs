@@ -25,7 +25,7 @@ public class Event
 
     public double? Longitude {get; set;} 
 
-    public string? Poster_url {get; set;}
+    public string? PosterUrl {get; set;}
 
     public required DateTime Start {get; set;}
 
