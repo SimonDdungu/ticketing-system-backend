@@ -38,4 +38,33 @@ public static class Permissions
         public const string Edit = "organizers.edit";
         public const string Delete = "organizers.delete";
     }
+
+
+
+    public static readonly Dictionary<string, string> Descriptions = new()
+    {
+        [Events.Create] = "Can create events",
+        [Events.View] = "Can view events",
+        [Events.Edit] = "Can edit events",
+        [Events.Delete] = "Can delete events",
+
+        [Orders.Create] = "Can create orders",
+        [Orders.View] = "Can view orders",
+
+        [Users.Create] = "Can create users",
+        [Users.View] = "Can view users",
+        [Users.Edit] = "Can edit users",
+        [Users.Delete] = "Can delete users",
+        [Users.Ban] = "Can ban users",
+
+        [TicketTypes.Create] = "Can create ticket types",
+        [TicketTypes.View] = "Can view ticket types",
+        [TicketTypes.Edit] = "Can edit ticket types",
+        [TicketTypes.Delete] = "Can delete ticket types",
+
+        [Organizers.Create] = "Can create organizers",
+        [Organizers.View] = "Can view organizers",
+        [Organizers.Edit] = "Can edit organizers",
+        [Organizers.Delete] = "Can delete organizers",
+    };
 }
