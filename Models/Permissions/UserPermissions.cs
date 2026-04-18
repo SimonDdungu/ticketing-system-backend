@@ -1,12 +1,12 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Ticketing_backend.Models.Users;
 namespace Ticketing_backend.Models.Permissions;
 
-[PrimaryKey(nameof(RoleId), nameof(PermissionId))]
-public class RolePermission
+[PrimaryKey(nameof(UserId), nameof(PermissionId))]
+public class UserPermission
 {
-    public required Guid RoleId { get; set; }
-    public IdentityRole<Guid>? Role { get; set; }
+    public required Guid UserId { get; set; }
+    public User? User { get; set; }
 
     public required Guid PermissionId { get; set; }
     public Permission? Permission { get; set; }

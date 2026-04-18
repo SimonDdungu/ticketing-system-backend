@@ -28,6 +28,8 @@ public class AppDbContext: IdentityDbContext<User, IdentityRole<Guid>, Guid>
 
     public DbSet<RolePermission> RolePermissions => Set<RolePermission>();
 
+    public DbSet<UserPermission> UserPermissions => Set<UserPermission>();
+
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
