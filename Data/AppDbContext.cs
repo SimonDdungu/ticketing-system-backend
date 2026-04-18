@@ -34,18 +34,6 @@ public class AppDbContext: IdentityDbContext<User, IdentityRole<Guid>, Guid>
     {
         base.OnModelCreating(modelBuilder);
 
-        // Making composite key for Role Permission Table (RoleId and PermissionId)
-        modelBuilder.Entity<RolePermission>()
-            .HasKey(rp => new { rp.RoleId, rp.PermissionId });
-
-        // RolePermission belongs to one Role, and a Role can have many RolePermissions.
-        modelBuilder.Entity<RolePermission>()
-            .HasOne(rp => rp.Role)
-            .WithMany()
-            .HasForeignKey(rp => rp.RoleId);
-
-        
-
         // Save the Enum as a String in the DB
         modelBuilder.Entity<Event>()
             .Property(p => p.Status)

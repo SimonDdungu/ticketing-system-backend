@@ -1,6 +1,5 @@
 // Data/RoleSeeder.cs
 using Microsoft.AspNetCore.Identity;
-using Ticketing_backend.Data;
 using Ticketing_backend.Models.Permissions;
 namespace Ticketing_backend.Data;
 
@@ -54,30 +53,36 @@ public static class RoleSeeder
     public static async Task SeedAsync(RoleManager<IdentityRole<Guid>> roleManager, AppDbContext context)
     {
         // Seed all permissions into the database
-        var allPermissions = RolePermissions.Values
-                                .SelectMany(p => p)
-                                .Distinct()
-                                .ToList();
+        var allPermissions = RolePermissions.Values // gets all values in dictonary
+                                .SelectMany(p => p) // flatens array of arrays into a list
+                                .Distinct() // removes duplicates
+                                .ToList(); 
 
         foreach (var permissionName in allPermissions)
         {
+            // Checks Permission Table, return true if "Any" record matches
             if (!context.Permissions.Any(p => p.Name == permissionName))
             {
                 context.Permissions.Add(new Permission
                 {
                     Name = permissionName,
-                    Description = permissionName
+                    Description = Permissions.Descriptions[permissionName]
                 });
             }
         }
 
         await context.SaveChangesAsync();
 
+
+
+
+
         // Seed roles and assign permissions
         foreach (var (roleName, permissions) in RolePermissions)
         {
-            if (!await roleManager.RoleExistsAsync(roleName))
+            if (!await roleManager.RoleExistsAsync(roleName)){
                 await roleManager.CreateAsync(new IdentityRole<Guid>(roleName));
+            }
 
             var role = await roleManager.FindByNameAsync(roleName);
 
