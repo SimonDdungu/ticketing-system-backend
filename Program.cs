@@ -23,13 +23,15 @@ builder.Services.AddIdentity<User, IdentityRole<Guid>>()
 
 var app = builder.Build();
 
-// Seed The Role Database.
+// Seed The Role and Permission Database.
 using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     await RoleSeeder.SeedAsync(roleManager, context);
 }
+
+
 app.UseHttpsRedirection();
 app.MapControllers();
 app.Run();

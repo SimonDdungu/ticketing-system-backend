@@ -10,4 +10,6 @@ public class RolePermission
 
     public required Guid PermissionId { get; set; }
     public Permission Permission { get; set; } = null!;
+
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }
