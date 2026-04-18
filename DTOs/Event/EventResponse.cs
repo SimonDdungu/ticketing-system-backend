@@ -1,6 +1,4 @@
-using System.Text.Json.Serialization;
 using Ticketing_backend.Models.Events;
-
 namespace Ticketing_backend.DTOs.Event;
 
 public class EventResponse
@@ -20,7 +18,6 @@ public class EventResponse
 
     public string PosterUrl {get; set;} = string.Empty;
 
-    [JsonConverter(typeof(JsonStringEnumConverter))]
     public EventStatus Status {get; set;}
 
     public List<EventImageResponse> Images { get; set; } = [];
