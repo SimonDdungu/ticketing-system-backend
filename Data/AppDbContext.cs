@@ -4,13 +4,16 @@ using Ticketing_backend.Models.Organizers;
 using Ticketing_backend.Models.Events;
 using Ticketing_backend.Models.Tickets;
 using Ticketing_backend.Models.Orders;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Ticketing_backend.Models.Permissions;
 namespace  Ticketing_backend.Data;
 
-public class AppDbContext: DbContext
+public class AppDbContext: IdentityDbContext<User, IdentityRole<Guid>, Guid>
+
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
     
-    public DbSet<User> Users => Set<User>();
     public DbSet<Organizer> Organizers => Set<Organizer>();
 
     public DbSet<Event> Events => Set<Event>();
@@ -21,25 +24,44 @@ public class AppDbContext: DbContext
 
     public DbSet<Order> Orders => Set<Order>();
 
+    public DbSet<Permission> Permissions => Set<Permission>();
+
+    public DbSet<RolePermission> RolePermissions => Set<RolePermission>();
+
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        // This tells EF Core to save the Enum as a String in the DB
+        // Making composite key for Role Permission Table (RoleId and PermissionId)
+        modelBuilder.Entity<RolePermission>()
+            .HasKey(rp => new { rp.RoleId, rp.PermissionId });
+
+        // RolePermission belongs to one Role, and a Role can have many RolePermissions.
+        modelBuilder.Entity<RolePermission>()
+            .HasOne(rp => rp.Role)
+            .WithMany()
+            .HasForeignKey(rp => rp.RoleId);
+
+        
+
+        // Save the Enum as a String in the DB
         modelBuilder.Entity<Event>()
             .Property(p => p.Status)
             .HasConversion<string>();
-
-        modelBuilder.Entity<EventImage>()
-            .HasIndex(i => i.IsPrimary)
-            .IsUnique()
-            .HasFilter("\"IsPrimary\" = true"); // Only one image can be IsPrimary
         
         modelBuilder.Entity<Order>()
             .Property(p => p.Status)
             .HasConversion<string>();
+
+
+
+        // Only one event image can be IsPrimary in the database
+        modelBuilder.Entity<EventImage>()
+            .HasIndex(i => i.IsPrimary)
+            .IsUnique()
+            .HasFilter("\"IsPrimary\" = true"); 
             
     }
 }
