@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
+using NanoidDotNet;
 using Ticketing_backend.Models.Permissions;
 
 namespace Ticketing_backend.Models.Users;
@@ -11,6 +12,8 @@ public class User : IdentityUser<Guid>
 
     [MaxLength(100)]
     public required string LastName { get; set; }
+
+    public string PublicId { get; set; } = $"user-{Nanoid.Generate(Nanoid.Alphabets.UppercaseLettersAndDigits, 8)}";
 
     public ICollection<UserPermission> UserPermissions { get; set; } = [];
 
