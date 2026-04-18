@@ -10,7 +10,7 @@ public class Order
 {
     public Guid Id {get; set;} = Guid.NewGuid();
 
-    public string ReferenceNumber { get; set; } = $"ORD-{Nanoid.Generate(Nanoid.Alphabets.UppercaseLettersAndDigits, 8)}";
+    public string ReferenceNumber { get; set; } = $"ord-{Nanoid.Generate(Nanoid.Alphabets.UppercaseLettersAndDigits, 8)}";
 
     public required Guid UserId {get; set;}
 
