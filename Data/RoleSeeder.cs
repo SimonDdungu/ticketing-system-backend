@@ -30,23 +30,23 @@ public static class RoleSeeder
         [
             Permissions.Events.Create, Permissions.Events.View, Permissions.Events.Edit,
             Permissions.Orders.View,
-            Permissions.Users.View, Permissions.Users.Ban,
+            Permissions.Users.View, Permissions.Users.Edit, Permissions.Users.Ban,
             Permissions.TicketTypes.Create, Permissions.TicketTypes.View, Permissions.TicketTypes.Edit,
             Permissions.Organizers.View
         ],
-
         ["Organizer"] =
         [
             Permissions.Events.Create, Permissions.Events.View, Permissions.Events.Edit, Permissions.Events.Delete,
             Permissions.TicketTypes.Create, Permissions.TicketTypes.View, Permissions.TicketTypes.Edit, Permissions.TicketTypes.Delete,
-            Permissions.Organizers.View, Permissions.Organizers.Edit
+            Permissions.Organizers.View, Permissions.Organizers.Edit, Permissions.Organizers.Delete
         ],
 
         ["Customer"] =
         [
             Permissions.Events.View,
             Permissions.Orders.Create, Permissions.Orders.View,
-            Permissions.TicketTypes.View
+            Permissions.TicketTypes.View,
+            Permissions.Organizers.Create
         ]
     };
 
