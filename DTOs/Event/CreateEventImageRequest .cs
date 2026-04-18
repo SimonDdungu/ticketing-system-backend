@@ -7,12 +7,13 @@ public class CreateEventImageRequest
     public required Guid EventId { get; set; }
 
     // This allows  user to send may images at once e.g 10 images 
-    public required List<ImageUploadDetail> Images { get; set; } = [];
+    public required List<ImageUploadDetail> Images { get; set; }
 }
 
 public class ImageUploadDetail
 {
-    public string? ImageUrl { get; set; }
+    [Required(ErrorMessage = "Image is required")]
+    public required string ImageUrl { get; set; }
 
     public bool IsPrimary { get; set; } = false;
 }
