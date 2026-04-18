@@ -12,4 +12,6 @@ public class Permission
     public required string Description { get; set; } // e.g. "Can create events"
 
     public ICollection<RolePermission> RolePermissions { get; set; } = [];
+
+    public ICollection<UserPermission> UserPermissions { get; set; } = [];
 }
