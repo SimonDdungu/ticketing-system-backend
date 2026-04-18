@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Ticketing_backend.Data;
+using Ticketing_backend.Models.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,8 +15,21 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
+builder.Services.AddIdentity<User, IdentityRole<Guid>>()
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
+
+
 var app = builder.Build();
 
+// Seed The Role Database.
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await RoleSeeder.SeedAsync(roleManager, context);
+}
 app.UseHttpsRedirection();
 app.MapControllers();
 app.Run();
