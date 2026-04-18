@@ -1,11 +1,16 @@
 
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
+using NanoidDotNet;
 using Ticketing_backend.Models.Users;
 namespace Ticketing_backend.Models.Orders;
 
+[Index(nameof(ReferenceNumber), IsUnique = true)]
 public class Order
 {
     public Guid Id {get; set;} = Guid.NewGuid();
+
+    public string ReferenceNumber { get; set; } = $"ORD-{Nanoid.Generate(Nanoid.Alphabets.UppercaseLettersAndDigits, 8)}";
 
     public required Guid UserId {get; set;}
 
