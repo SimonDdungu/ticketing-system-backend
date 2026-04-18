@@ -1,8 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 using Ticketing_backend.Models.Organizers;
 namespace Ticketing_backend.Models.Events;
 
+[Index(nameof(Status))]
 public class Event
 {
     public Guid Id {get; set;} = Guid.NewGuid();
