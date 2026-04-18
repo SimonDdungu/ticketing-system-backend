@@ -35,7 +35,7 @@ public class AppDbContext: DbContext
         modelBuilder.Entity<EventImage>()
             .HasIndex(i => i.IsPrimary)
             .IsUnique()
-            .HasFilter("[IsPrimary] = 1"); // Only one image can be IsPrimary
+            .HasFilter("\"IsPrimary\" = true"); // Only one image can be IsPrimary
         
         modelBuilder.Entity<Order>()
             .Property(p => p.Status)
