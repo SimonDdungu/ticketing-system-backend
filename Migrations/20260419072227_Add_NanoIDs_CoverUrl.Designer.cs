@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Ticketing_backend.Data;
@@ -11,9 +12,11 @@ using Ticketing_backend.Data;
 namespace Ticketing_backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260419072227_Add_NanoIDs_CoverUrl")]
+    partial class Add_NanoIDs_CoverUrl
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -642,7 +645,7 @@ namespace Ticketing_backend.Migrations
             modelBuilder.Entity("Ticketing_backend.Models.Events.Event", b =>
                 {
                     b.HasOne("Ticketing_backend.Models.Organizers.Organizer", "Organizer")
-                        .WithMany("Events")
+                        .WithMany()
                         .HasForeignKey("OrganizerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -791,11 +794,6 @@ namespace Ticketing_backend.Migrations
             modelBuilder.Entity("Ticketing_backend.Models.Orders.OrderItem", b =>
                 {
                     b.Navigation("Tickets");
-                });
-
-            modelBuilder.Entity("Ticketing_backend.Models.Organizers.Organizer", b =>
-                {
-                    b.Navigation("Events");
                 });
 
             modelBuilder.Entity("Ticketing_backend.Models.Permissions.Permission", b =>
