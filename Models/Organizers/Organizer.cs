@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using Ticketing_backend.Models.Events;
 using Ticketing_backend.Models.Users;
 namespace Ticketing_backend.Models.Organizers;
 
@@ -27,6 +28,8 @@ public class Organizer
     public string? Bio {get; set;}
 
     public string? LogoUrl {get; set;}
+
+    public ICollection<Event> Events { get; set; } = [];
 
     public DateTime CreatedAt {get; set;} = DateTime.UtcNow;
 
