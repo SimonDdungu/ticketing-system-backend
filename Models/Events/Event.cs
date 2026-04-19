@@ -29,6 +29,8 @@ public class Event
 
     public string? PosterUrl {get; set;}
 
+    public string? CoverUrl {get; set;}
+
     public required DateTime Start {get; set;}
 
     public required DateTime End {get; set;}

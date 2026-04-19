@@ -18,6 +18,8 @@ public class EventResponse
 
     public string PosterUrl {get; set;} = string.Empty;
 
+    public string CoverUrl {get; set;} = string.Empty;
+
     public EventStatus Status {get; set;}
 
     public List<EventImageResponse> Images { get; set; } = [];

@@ -14,8 +14,14 @@ public class UpdateEventRequest
     public string? Venue { get; set; }
 
     public double? Latitude { get; set; }
+    
     public double? Longitude { get; set; }
 
+    public string? PosterUrl {get; set;}
+
+    public string? CoverUrl {get; set;}
+
     public DateTime? Start { get; set; }
+
     public DateTime? End { get; set; }
 }
