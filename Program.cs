@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Ticketing_backend.Data;
 using Ticketing_backend.Models.Users;
+using Elastic.Clients.Elasticsearch;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +31,16 @@ using (var scope = app.Services.CreateScope())
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     await RoleSeeder.SeedAsync(roleManager, context);
 }
+
+
+
+builder.Services.AddSingleton<ElasticsearchClient>(sp =>
+{
+    var settings = new ElasticsearchClientSettings(new Uri("http://localhost:9200"))
+        .DefaultIndex("events");
+
+    return new ElasticsearchClient(settings);
+});
 
 
 app.UseHttpsRedirection();
