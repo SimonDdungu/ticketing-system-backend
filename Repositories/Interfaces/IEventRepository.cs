@@ -11,6 +11,10 @@ public interface IEventRepository : IRepository<Event>
 
     Task<IEnumerable<Event>> GetByStatusAsync(EventStatus status);
 
+    Task<IEnumerable<Event>> GetByStartDateAsync(DateTime start);
+
+    Task<IEnumerable<Event>> GetByEndDateAsync(DateTime end);
+
     Task<IEnumerable<Event>> GetByDateRangeAsync(DateTime start, DateTime end);
 
     Task<IEnumerable<Event>> GetAllWithImagesAsync();
