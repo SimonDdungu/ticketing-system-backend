@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 using Ticketing_backend.Models.Organizers;
+using Ticketing_backend.Models.Tickets;
 namespace Ticketing_backend.Models.Events;
 
 [Index(nameof(Status))]
@@ -39,6 +40,8 @@ public class Event
     public EventStatus Status {get; set;} = EventStatus.Draft;
 
     public ICollection<EventImage> Images { get; set; } = [];
+
+    public ICollection<TicketType> TicketTypes { get; set; } = [];
 
     public DateTime CreatedAt {get; set;} = DateTime.UtcNow;
 
