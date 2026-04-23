@@ -21,9 +21,9 @@ public class Order
 
     public PaymentStatus Status {get; set;} = PaymentStatus.Pending;
 
-    public string? TransactionID {get; set;} 
+    public string? TransactionId {get; set;} 
 
-    public ICollection<OrderItem> Items {get; set;} = [];
+    public ICollection<OrderItem> OrderItems {get; set;} = [];
 
     public DateTime CreatedAt {get; set;} = DateTime.UtcNow;
 
