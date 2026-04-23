@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Ticketing_backend.Data;
 using Ticketing_backend.Models.Tickets;
 using Ticketing_backend.Repositories.Interfaces;
-namespace Ticketing_backend.Repositories;
+namespace Ticketing_backend.Repositories.Implementations;
 
 public class TicketTypeRepository : Repository<TicketType>, ITicketTypeRepository
 {

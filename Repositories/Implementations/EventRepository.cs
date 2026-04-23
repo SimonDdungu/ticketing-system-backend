@@ -2,10 +2,14 @@ using Microsoft.EntityFrameworkCore;
 using Ticketing_backend.Data;
 using Ticketing_backend.Models.Events;
 using Ticketing_backend.Repositories.Interfaces;
-namespace Ticketing_backend.Repositories;
+using Microsoft.EntityFrameworkCore;
+using Ticketing_backend.Data;
+namespace Ticketing_backend.Repositories.Implementations;
 
-public class EventRepository(AppDbContext context) : Repository<Event>(context), IEventRepository
+public class EventRepository : Repository<Event>, IEventRepository
 {
+    public EventRepository(AppDbContext context) : base(context) { }
+
     public async Task<IEnumerable<Event>> GetByTitleAsync(string title) =>
         await _dbSet.Where(e => e.Title.Contains(title)).ToListAsync();
 
@@ -17,6 +21,12 @@ public class EventRepository(AppDbContext context) : Repository<Event>(context),
 
     public async Task<IEnumerable<Event>> GetByStatusAsync(EventStatus status) =>
         await _dbSet.Where(e => e.Status == status).ToListAsync();
+
+    public async Task<IEnumerable<Event>> GetByStartDateAsync(DateTime start) =>
+        await _dbSet.Where(e => e.Start >= start).ToListAsync();
+
+    public async Task<IEnumerable<Event>> GetByEndDateAsync(DateTime end) =>
+        await _dbSet.Where(e => e.End <= end).ToListAsync();
 
     public async Task<IEnumerable<Event>> GetByDateRangeAsync(DateTime start, DateTime end) =>
         await _dbSet.Where(e => e.Start >= start && e.End <= end).ToListAsync();

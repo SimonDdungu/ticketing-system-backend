@@ -1,10 +1,11 @@
-// Repositories/EventImageRepository.cs
 using Microsoft.EntityFrameworkCore;
 using Ticketing_backend.Data;
 using Ticketing_backend.Models.Events;
+using Microsoft.EntityFrameworkCore;
+using Ticketing_backend.Data;
 using Ticketing_backend.Repositories.Interfaces;
 
-namespace Ticketing_backend.Repositories;
+namespace Ticketing_backend.Repositories.Implementations;
 
 public class EventImageRepository : Repository<EventImage>, IEventImageRepository
 {
