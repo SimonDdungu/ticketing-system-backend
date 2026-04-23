@@ -265,7 +265,7 @@ namespace Ticketing_backend.Migrations
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18, 2)");
 
-                    b.Property<string>("TransactionID")
+                    b.Property<string>("TransactionId")
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -675,7 +675,7 @@ namespace Ticketing_backend.Migrations
             modelBuilder.Entity("Ticketing_backend.Models.Orders.OrderItem", b =>
                 {
                     b.HasOne("Ticketing_backend.Models.Orders.Order", "Order")
-                        .WithMany("Items")
+                        .WithMany("OrderItems")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -770,7 +770,7 @@ namespace Ticketing_backend.Migrations
             modelBuilder.Entity("Ticketing_backend.Models.Tickets.TicketType", b =>
                 {
                     b.HasOne("Ticketing_backend.Models.Events.Event", "Event")
-                        .WithMany()
+                        .WithMany("TicketTypes")
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -781,11 +781,13 @@ namespace Ticketing_backend.Migrations
             modelBuilder.Entity("Ticketing_backend.Models.Events.Event", b =>
                 {
                     b.Navigation("Images");
+
+                    b.Navigation("TicketTypes");
                 });
 
             modelBuilder.Entity("Ticketing_backend.Models.Orders.Order", b =>
                 {
-                    b.Navigation("Items");
+                    b.Navigation("OrderItems");
                 });
 
             modelBuilder.Entity("Ticketing_backend.Models.Orders.OrderItem", b =>
