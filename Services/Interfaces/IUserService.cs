@@ -14,9 +14,11 @@ public interface IUserService
 
     Task<UserResponse?> GetByEmailAsync(string email);
 
+     Task<UserResponse?> GetByPublicIdAsync(string publicId);
+
     Task<IEnumerable<UserResponse>> GetByFirstNameAsync(string firstName);
 
     Task<IEnumerable<UserResponse>> GetByLastNameAsync(string lastName);
-    
+
     Task<UserResponse?> GetByPhoneNumberAsync(string phoneNumber);
 }

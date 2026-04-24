@@ -86,4 +86,11 @@ public class UserService : IUserService
         
         return user?.ToResponse();
     }
+
+    public async Task<UserResponse?> GetByPublicIdAsync(string publicId)
+    {
+        var user = _userManager.Users.FirstOrDefault(u => u.PublicId == publicId);
+        
+        return user?.ToResponse();
+    }
 }
