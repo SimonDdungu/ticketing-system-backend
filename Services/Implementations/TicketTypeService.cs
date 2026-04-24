@@ -1,4 +1,3 @@
-// Services/TicketTypeService.cs
 using Ticketing_backend.DTOs.TicketType;
 using Ticketing_backend.Mappings;
 using Ticketing_backend.Repositories.Interfaces;
