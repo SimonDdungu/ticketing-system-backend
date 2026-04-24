@@ -17,6 +17,7 @@ public class OrganizerService : IOrganizerService
     public async Task<OrganizerResponse?> GetByIdAsync(Guid id)
     {
         var organizer = await _organizerRepository.GetByIdAsync(id);
+
         return organizer?.ToResponse();
     }
 

@@ -20,4 +20,7 @@ public class UserRepository : Repository<User>, IUserRepository
 
     public async Task<User?> GetByEmail(string email) => 
         await _dbSet.FirstOrDefaultAsync(u => u.Email == email);
+
+    public async Task<User?> GetByPhoneNumber(string phoneNumber) => 
+        await _dbSet.FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
 }
