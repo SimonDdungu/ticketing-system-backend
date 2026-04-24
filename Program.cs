@@ -3,6 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using Ticketing_backend.Data;
 using Ticketing_backend.Models.Users;
 using Elastic.Clients.Elasticsearch;
+using Ticketing_backend.Repositories.Interfaces;
+using Ticketing_backend.Repositories.Implementations;
+using Ticketing_backend.Services.Interfaces;
+using Ticketing_backend.Services.Implementations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +25,8 @@ builder.Services.AddIdentity<User, IdentityRole<Guid>>()
     .AddDefaultTokenProviders();
 
 
+builder.Services.AddScoped<IOrganizerRepository, OrganizerRepository>();
+builder.Services.AddScoped<IOrganizerService, OrganizerService>();
 
 var app = builder.Build();
 
