@@ -10,9 +10,12 @@ public class EventService : IEventService
 {
     private readonly IEventRepository _eventRepository;
 
-    public EventService(IEventRepository eventRepository)
+    private readonly IOrganizerRepository _organizerRepository;
+
+    public EventService(IEventRepository eventRepository, IOrganizerRepository organizerRepository)
     {
         _eventRepository = eventRepository;
+        _organizerRepository = organizerRepository;
     }
 
     public async Task<EventResponse?> GetByIdAsync(Guid id)
@@ -29,6 +32,9 @@ public class EventService : IEventService
 
     public async Task<EventResponse> CreateAsync(CreateEventRequest request)
     {
+        var organizer = await _organizerRepository.GetByIdAsync(request.OrganizerId);
+        if (organizer is null) throw new KeyNotFoundException($"Organizer with id {request.OrganizerId} not found.");
+
         var e = request.ToModel();
         _eventRepository.Add(e);
         await _eventRepository.SaveAsync();

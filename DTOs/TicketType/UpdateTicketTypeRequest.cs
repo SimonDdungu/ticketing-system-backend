@@ -11,5 +11,6 @@ public class UpdateTicketTypeRequest
     public decimal? Price { get; set; }
 
     [Range(1, int.MaxValue, ErrorMessage = "Invalid Quantity.")]
-    public int? QuantityAdded { get; set; }
+    public int? QuantityAvailable { get; set; }
+
 }
