@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Ticketing_backend.Models.Events;
 namespace Ticketing_backend.DTOs.Event;
 
 public class CreateEventRequest
@@ -25,6 +26,8 @@ public class CreateEventRequest
     public string? PosterUrl {get; set;}
 
     public string? CoverUrl {get; set;}
+
+    public EventStatus Status { get; set; } = EventStatus.Draft;
 
     [Required(ErrorMessage = "Start date and time for event is required.")]
     public required DateTime Start { get; set; }

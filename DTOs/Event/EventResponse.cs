@@ -8,6 +8,8 @@ public class EventResponse
 
     public string Description { get; set; } = string.Empty;
 
+    public Guid OrganizerId { get; set; }
+
     public string OrganizerName { get; set; } = string.Empty;
 
     public string Venue { get; set; } = string.Empty;

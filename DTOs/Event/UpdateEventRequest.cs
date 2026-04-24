@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Ticketing_backend.Models.Events;
 
 namespace Ticketing_backend.DTOs.Event;
 
@@ -20,6 +21,8 @@ public class UpdateEventRequest
     public string? PosterUrl {get; set;}
 
     public string? CoverUrl {get; set;}
+
+    public EventStatus? Status { get; set; }
 
     public DateTime? Start { get; set; }
 
