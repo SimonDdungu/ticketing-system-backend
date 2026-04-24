@@ -27,6 +27,7 @@ builder.Services.AddIdentity<User, IdentityRole<Guid>>()
 
 builder.Services.AddScoped<IOrganizerRepository, OrganizerRepository>();
 builder.Services.AddScoped<IOrganizerService, OrganizerService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
