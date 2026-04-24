@@ -1,8 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Ticketing_backend.Data;
 using Ticketing_backend.Models.Events;
-using Microsoft.EntityFrameworkCore;
-using Ticketing_backend.Data;
 using Ticketing_backend.Repositories.Interfaces;
 
 namespace Ticketing_backend.Repositories.Implementations;
