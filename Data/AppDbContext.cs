@@ -36,6 +36,10 @@ public class AppDbContext: IdentityDbContext<User, IdentityRole<Guid>, Guid>
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<User>()
+            .Property(u => u.Email)
+            .IsRequired();
+
         // Save the Enum as a String in the DB
         modelBuilder.Entity<Event>()
             .Property(p => p.Status)

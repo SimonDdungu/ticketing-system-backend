@@ -1,5 +1,8 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Ticketing_backend.DTOs.Pagination;
 using Ticketing_backend.DTOs.User;
+using Ticketing_backend.Filters;
 using Ticketing_backend.Mappings;
 using Ticketing_backend.Models.Users;
 using Ticketing_backend.Services.Interfaces;
@@ -22,11 +25,36 @@ public class UserService : IUserService
         return user?.ToResponse();
     }
 
-    public async Task<IEnumerable<UserResponse>> GetAllAsync()
+    public async Task<PaginatedResponse<UserResponse>> GetAllAsync(UserFilterRequest filter)
     {
-        var users = _userManager.Users.ToList();
+        var query = _userManager.Users.AsQueryable();
 
-        return users.Select(u => u.ToResponse());
+        if (filter.FirstName is not null)
+            query = query.Where(u => u.FirstName.Contains(filter.FirstName));
+
+        if (filter.LastName is not null)
+            query = query.Where(u => u.LastName.Contains(filter.LastName));
+
+        if (filter.Email is not null)
+            query = query.Where(u => u.Email!.Contains(filter.Email));
+
+        if (filter.PhoneNumber is not null)
+            query = query.Where(u => u.PhoneNumber != null && u.PhoneNumber.Contains(filter.PhoneNumber));
+
+        if (filter.PublicId is not null)
+            query = query.Where(u => u.PublicId == filter.PublicId);
+
+        var totalCount = await query.CountAsync();
+
+        var users = await query.Skip((filter.Page - 1) * filter.PageSize).Take(filter.PageSize).ToListAsync();
+
+        return new PaginatedResponse<UserResponse>
+        {
+            Data = users.Select(u => u.ToResponse()),
+            Page = filter.Page,
+            PageSize = filter.PageSize,
+            TotalCount = totalCount
+        };
     }
 
     public async Task<UserResponse> UpdateAsync(Guid id, UpdateUserRequest request)
@@ -34,6 +62,8 @@ public class UserService : IUserService
         var user = await _userManager.FindByIdAsync(id.ToString());
 
         if (user is null) throw new KeyNotFoundException($"User with id {id} not found.");
+
+        
 
         if (request.FirstName is not null) user.FirstName = request.FirstName;
 
@@ -57,40 +87,5 @@ public class UserService : IUserService
         if (user is null) throw new KeyNotFoundException($"User with id {id} not found.");
 
         await _userManager.DeleteAsync(user);
-    }
-
-    public async Task<UserResponse?> GetByEmailAsync(string email)
-    {
-        var user = await _userManager.FindByEmailAsync(email);
-
-        return user?.ToResponse();
-    }
-
-    public async Task<IEnumerable<UserResponse>> GetByFirstNameAsync(string firstName)
-{
-    var users = _userManager.Users.Where(u => u.FirstName.Contains(firstName)).ToList();
-
-    return users.Select(u => u.ToResponse());
-}
-
-    public async Task<IEnumerable<UserResponse>> GetByLastNameAsync(string lastName)
-    {
-        var users = _userManager.Users.Where(u => u.LastName.Contains(lastName)).ToList();
-
-        return users.Select(u => u.ToResponse());
-    }
-
-    public async Task<UserResponse?> GetByPhoneNumberAsync(string phoneNumber)
-    {
-        var user = _userManager.Users.FirstOrDefault(u => u.PhoneNumber == phoneNumber);
-        
-        return user?.ToResponse();
-    }
-
-    public async Task<UserResponse?> GetByPublicIdAsync(string publicId)
-    {
-        var user = _userManager.Users.FirstOrDefault(u => u.PublicId == publicId);
-        
-        return user?.ToResponse();
     }
 }
