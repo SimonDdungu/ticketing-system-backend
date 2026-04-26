@@ -15,6 +15,8 @@ public class OrderItemResponse
 
     public decimal PriceAtPurchase { get; set; }
 
+    public decimal SubTotal => PriceAtPurchase * Quantity;
+
     public List<TicketResponse> Tickets { get; set; } = [];
 
 }
