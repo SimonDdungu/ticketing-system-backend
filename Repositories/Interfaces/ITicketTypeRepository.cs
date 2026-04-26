@@ -5,6 +5,8 @@ public interface ITicketTypeRepository : IRepository<TicketType>
 {
     Task<IEnumerable<TicketType>> GetByEventIdAsync(Guid eventId);
 
+    Task<TicketType?> GetByIdWithEventAsync(Guid id);
+
     Task<IEnumerable<TicketType>> GetByNameAsync(string name);
 
     Task<IEnumerable<TicketType>> GetByPriceAsync(decimal price);

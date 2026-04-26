@@ -11,6 +11,9 @@ public class TicketTypeRepository : Repository<TicketType>, ITicketTypeRepositor
     public async Task<IEnumerable<TicketType>> GetByEventIdAsync(Guid eventId) =>
         await _dbSet.Where(t => t.EventId == eventId).ToListAsync();
 
+    public async Task<TicketType?> GetByIdWithEventAsync(Guid id) =>
+        await _dbSet.Include(t => t.Event).FirstOrDefaultAsync(t => t.Id == id);
+
     public async Task<IEnumerable<TicketType>> GetByNameAsync(string name) =>
         await _dbSet.Where(t => t.Name.Contains(name)).ToListAsync();
 

@@ -5,33 +5,44 @@ using Ticketing_backend.Repositories.Interfaces;
 
 namespace Ticketing_backend.Repositories.Implementations;
 
-public class TicketRepository : Repository<Ticket>, ITicketRepository
+public class TicketRepository : ITicketRepository
 {
-    public TicketRepository(AppDbContext context): base(context) {}
+    private readonly AppDbContext _context;
+    private readonly DbSet<Ticket> _dbSet;
 
-    public async Task<IEnumerable<Ticket>> GetByTicketTypeIdAsync(Guid ticketTypeId)
+    public TicketRepository(AppDbContext context)
     {
-        return await _dbSet.Where(t => t.TicketTypeId == ticketTypeId).ToListAsync();
+        _context = context;
+        _dbSet = context.Set<Ticket>();
     }
 
-    public async Task<IEnumerable<Ticket>> GetByEventIdAsync(Guid eventId)
-    {
-        return await _dbSet.Where(t => t.EventId == eventId).ToListAsync();
-    }
+     public async Task<Ticket?> GetByIdAsync(Guid id) =>
+        await _dbSet.FindAsync(id);
 
-    public async Task<IEnumerable<Ticket>> GetByIsScannedAsync(bool IsScanned)
-    {
-        return await _dbSet.Where(t => t.IsScanned == IsScanned).ToListAsync();
-    }
+    public async Task<IEnumerable<Ticket>> GetAllAsync() =>
+        await _dbSet.ToListAsync();
 
-    public async Task<IEnumerable<Ticket>> GetByOrderItemAsync(Guid orderItemID)
-    {
-        return await _dbSet.Where(t => t.OrderItemId == orderItemID).ToListAsync();
-    }
+    public void Add(Ticket entity) =>
+        _dbSet.Add(entity);
 
-    public async Task<Ticket?> GetByQRCodeAsync(string qrCode)
-    {
-        return await _dbSet.FirstOrDefaultAsync(t => t.QRCode == qrCode);
-    }
+    public void Update(Ticket entity) =>
+        _dbSet.Update(entity);
 
+    public async Task SaveAsync() =>
+        await _context.SaveChangesAsync();
+
+    public async Task<IEnumerable<Ticket>> GetByTicketTypeIdAsync(Guid ticketTypeId) =>
+        await _dbSet.Where(t => t.TicketTypeId == ticketTypeId).ToListAsync();
+
+    public async Task<IEnumerable<Ticket>> GetByEventIdAsync(Guid eventId) =>
+        await _dbSet.Where(t => t.EventId == eventId).ToListAsync();
+
+    public async Task<IEnumerable<Ticket>> GetByIsScannedAsync(bool isScanned) =>
+        await _dbSet.Where(t => t.IsScanned == isScanned).ToListAsync();
+
+    public async Task<IEnumerable<Ticket>> GetByOrderItemAsync(Guid orderItemId) =>
+        await _dbSet.Where(t => t.OrderItemId == orderItemId).ToListAsync();
+
+    public async Task<Ticket?> GetByQRCodeAsync(string qrCode) =>
+        await _dbSet.FirstOrDefaultAsync(t => t.QRCode == qrCode);
 }
