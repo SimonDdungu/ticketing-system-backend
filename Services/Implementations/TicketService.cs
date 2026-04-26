@@ -8,7 +8,9 @@ namespace Ticketing_backend.Services;
 public class TicketService : ITicketService
 {
     private readonly ITicketRepository _ticketRepository;
+
     private readonly IOrderItemRepository _orderItemRepository;
+
     private readonly IEventRepository _eventRepository;
 
     public TicketService(ITicketRepository ticketRepository, IOrderItemRepository orderItemRepository, IEventRepository eventRepository)
