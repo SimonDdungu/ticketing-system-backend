@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 
+namespace Ticketing_backend.Controllers;
+
 [ApiController]
 public class BaseController : ControllerBase
 {
