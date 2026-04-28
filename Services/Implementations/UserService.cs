@@ -29,19 +29,19 @@ public class UserService : IUserService
     {
         var query = _userManager.Users.AsQueryable();
 
-        if (filter.FirstName is not null)
+        if (!string.IsNullOrWhiteSpace(filter.FirstName))
             query = query.Where(u => u.FirstName.Contains(filter.FirstName));
 
-        if (filter.LastName is not null)
+        if (!string.IsNullOrWhiteSpace(filter.LastName))
             query = query.Where(u => u.LastName.Contains(filter.LastName));
 
-        if (filter.Email is not null)
-            query = query.Where(u => u.Email!.Contains(filter.Email));
+        if (!string.IsNullOrWhiteSpace(filter.Email))
+            query = query.Where(u => u.Email != null && u.Email.Contains(filter.Email));
 
-        if (filter.PhoneNumber is not null)
+        if (!string.IsNullOrWhiteSpace(filter.PhoneNumber))
             query = query.Where(u => u.PhoneNumber != null && u.PhoneNumber.Contains(filter.PhoneNumber));
 
-        if (filter.PublicId is not null)
+        if (!string.IsNullOrWhiteSpace(filter.PublicId))
             query = query.Where(u => u.PublicId == filter.PublicId);
 
         var totalCount = await query.CountAsync();

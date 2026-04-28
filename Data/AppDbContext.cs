@@ -7,6 +7,7 @@ using Ticketing_backend.Models.Orders;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Ticketing_backend.Models.Permissions;
+using Ticketing_backend.Models.Tokens;
 namespace  Ticketing_backend.Data;
 
 public class AppDbContext: IdentityDbContext<User, IdentityRole<Guid>, Guid>
@@ -29,6 +30,8 @@ public class AppDbContext: IdentityDbContext<User, IdentityRole<Guid>, Guid>
     public DbSet<RolePermission> RolePermissions => Set<RolePermission>();
 
     public DbSet<UserPermission> UserPermissions => Set<UserPermission>();
+
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
 
 
