@@ -1,4 +1,3 @@
-// Data/RoleSeeder.cs
 using Microsoft.AspNetCore.Identity;
 using Ticketing_backend.Models.Permissions;
 namespace Ticketing_backend.Data;
@@ -32,7 +31,7 @@ public static class RoleSeeder
             Permissions.Orders.View,
             Permissions.Users.View, Permissions.Users.Edit, Permissions.Users.Ban,
             Permissions.TicketTypes.Create, Permissions.TicketTypes.View, Permissions.TicketTypes.Edit,
-            Permissions.Organizers.View
+            Permissions.Organizers.View, Permissions.Organizers.Edit
         ],
         ["Organizer"] =
         [

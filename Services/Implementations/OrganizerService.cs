@@ -1,4 +1,6 @@
 using Ticketing_backend.DTOs.Organizer;
+using Ticketing_backend.DTOs.Pagination;
+using Ticketing_backend.Filters;
 using Ticketing_backend.Mappings;
 using Ticketing_backend.Repositories.Interfaces;
 using Ticketing_backend.Services.Interfaces;
@@ -21,6 +23,19 @@ public class OrganizerService : IOrganizerService
         return organizer?.ToResponse();
     }
 
+    public async Task<PaginatedResponse<OrganizerResponse>> GetFilteredAsync(OrganizerFilter filter)
+    {
+        var result = await _organizerRepository.GetFilteredAsync(filter);
+
+        return new PaginatedResponse<OrganizerResponse>
+        {
+            Data = result.Data.Select(o => o.ToResponse()),
+            Page = result.Page,
+            PageSize = result.PageSize,
+            TotalCount = result.TotalCount
+        };
+    }
+
     public async Task<IEnumerable<OrganizerResponse>> GetAllAsync()
     {
         var organizers = await _organizerRepository.GetAllAsync();
@@ -30,7 +45,10 @@ public class OrganizerService : IOrganizerService
 
     public async Task<OrganizerResponse> CreateAsync(CreateOrganizerRequest request)
     {
-        var organizer = request.ToModel(Guid.Empty); // replace with actual userId later after setting up Auth.
+        if (request.UserId is null)
+            throw new UnauthorizedAccessException("User must be logged in to create an organizer.");
+
+        var organizer = request.ToModel(request.UserId.Value);
         
         _organizerRepository.Add(organizer);
 
@@ -93,5 +111,11 @@ public class OrganizerService : IOrganizerService
         var organizer = await _organizerRepository.GetWithEventsAsync(id);
 
         return organizer?.ToResponse();
+    }
+
+    public async Task<bool> IsOwnerAsync(Guid organizerId, Guid userId)
+    {
+        var organizer = await _organizerRepository.GetByIdAsync(organizerId);
+        return organizer?.UserId == userId;
     }
 }

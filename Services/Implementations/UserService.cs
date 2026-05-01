@@ -5,6 +5,7 @@ using Ticketing_backend.DTOs.User;
 using Ticketing_backend.Filters;
 using Ticketing_backend.Mappings;
 using Ticketing_backend.Models.Users;
+using Ticketing_backend.Repositories.Interfaces;
 using Ticketing_backend.Services.Interfaces;
 
 namespace Ticketing_backend.Services.Implementations;
@@ -13,9 +14,13 @@ public class UserService : IUserService
 {
     private readonly UserManager<User> _userManager;
 
-    public UserService(UserManager<User> userManager)
+    private readonly IUserRepository _userRepository;
+
+    public UserService(UserManager<User> userManager, IUserRepository userRepository)
     {
         _userManager = userManager;
+
+        _userRepository = userRepository;
     }
 
     public async Task<UserResponse?> GetByIdAsync(Guid id)
@@ -27,33 +32,14 @@ public class UserService : IUserService
 
     public async Task<PaginatedResponse<UserResponse>> GetAllAsync(UserFilterRequest filter)
     {
-        var query = _userManager.Users.AsQueryable();
-
-        if (!string.IsNullOrWhiteSpace(filter.FirstName))
-            query = query.Where(u => u.FirstName.Contains(filter.FirstName));
-
-        if (!string.IsNullOrWhiteSpace(filter.LastName))
-            query = query.Where(u => u.LastName.Contains(filter.LastName));
-
-        if (!string.IsNullOrWhiteSpace(filter.Email))
-            query = query.Where(u => u.Email != null && u.Email.Contains(filter.Email));
-
-        if (!string.IsNullOrWhiteSpace(filter.PhoneNumber))
-            query = query.Where(u => u.PhoneNumber != null && u.PhoneNumber.Contains(filter.PhoneNumber));
-
-        if (!string.IsNullOrWhiteSpace(filter.PublicId))
-            query = query.Where(u => u.PublicId == filter.PublicId);
-
-        var totalCount = await query.CountAsync();
-
-        var users = await query.Skip((filter.Page - 1) * filter.PageSize).Take(filter.PageSize).ToListAsync();
-
+        var result = await _userRepository.GetAllAsync(filter);
+        
         return new PaginatedResponse<UserResponse>
         {
-            Data = users.Select(u => u.ToResponse()),
-            Page = filter.Page,
-            PageSize = filter.PageSize,
-            TotalCount = totalCount
+            Data = result.Data.Select(u => u.ToResponse()),
+            Page = result.Page,
+            PageSize = result.PageSize,
+            TotalCount = result.TotalCount
         };
     }
 
