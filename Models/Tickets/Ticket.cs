@@ -5,6 +5,8 @@ using Ticketing_backend.Models.Orders;
 namespace Ticketing_backend.Models.Tickets;
 
 [Index(nameof(QRCode), IsUnique = true)]
+[Index(nameof(EventId))]
+[Index(nameof(OrderItemId))]
 public class Ticket
 {
     public Guid Id { get; set; } = Guid.NewGuid();

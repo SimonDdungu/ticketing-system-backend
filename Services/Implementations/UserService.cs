@@ -74,4 +74,29 @@ public class UserService : IUserService
 
         await _userManager.DeleteAsync(user);
     }
+
+    public async Task SoftDeleteAsync(Guid id, SoftDeleteRequest request)
+    {
+        var user = await _userManager.FindByIdAsync(id.ToString());
+        if (user is null) throw new KeyNotFoundException($"User with id {id} not found.");
+
+        user.IsDeleted = request.IsDeleted;
+        user.DeletedAt = request.IsDeleted ? DateTime.UtcNow : null;
+        user.UpdatedAt = DateTime.UtcNow;
+
+        await _userManager.UpdateAsync(user);
+    }
+
+    public async Task BanAsync(Guid id, BanUserRequest request)
+    {
+        var user = await _userManager.FindByIdAsync(id.ToString());
+        
+        if (user is null) throw new KeyNotFoundException($"User with id {id} not found.");
+
+        user.IsBanned = request.IsBanned;
+        user.BanReason = request.Reason;
+        user.UpdatedAt = DateTime.UtcNow;
+
+        await _userManager.UpdateAsync(user);
+    }
 }

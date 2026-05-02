@@ -18,3 +18,9 @@ public class UserResponse
 
     public DateTime UpdatedAt { get; set; }
 }
+
+public class AdminUserResponse : UserResponse
+{
+    public bool IsBanned { get; set; }
+    public string? BanReason { get; set; }
+}

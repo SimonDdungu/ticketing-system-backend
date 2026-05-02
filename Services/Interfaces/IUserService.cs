@@ -12,6 +12,10 @@ public interface IUserService
 
     Task<UserResponse> UpdateAsync(Guid id, UpdateUserRequest request);
 
+    Task BanAsync(Guid id, BanUserRequest request);
+
     Task DeleteAsync(Guid id);
+
+    Task SoftDeleteAsync(Guid id, SoftDeleteRequest request);
 
 }

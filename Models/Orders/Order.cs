@@ -6,6 +6,8 @@ using Ticketing_backend.Models.Users;
 namespace Ticketing_backend.Models.Orders;
 
 [Index(nameof(ReferenceNumber), IsUnique = true)]
+[Index(nameof(UserId))]
+[Index(nameof(Status))]
 public class Order
 {
     public Guid Id {get; set;} = Guid.NewGuid();

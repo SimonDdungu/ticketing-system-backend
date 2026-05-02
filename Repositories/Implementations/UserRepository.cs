@@ -33,6 +33,18 @@ public class UserRepository : Repository<User>, IUserRepository
         if (!string.IsNullOrWhiteSpace(filter.PublicId))
             query = query.Where(u => u.PublicId == filter.PublicId);
 
+        if (filter.IsBanned.HasValue)
+            query = query.Where(u => u.IsBanned == filter.IsBanned.Value);
+        else
+            query = query.Where(u => !u.IsBanned);
+
+        if (filter.IsDeleted.HasValue)
+            query = query.Where(u => u.IsDeleted == filter.IsDeleted.Value);
+        else
+            query = query.Where(u => !u.IsDeleted);
+
+        
+
         var totalCount = await query.CountAsync();
 
         var users = await query

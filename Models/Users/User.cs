@@ -17,6 +17,14 @@ public class User : IdentityUser<Guid>
 
     public ICollection<UserPermission> UserPermissions { get; set; } = [];
 
+    public bool IsBanned { get; set; } = false;
+
+    public string? BanReason { get; set; }
+
+    public bool IsDeleted { get; set; } = false;
+
+    public DateTime? DeletedAt { get; set; }
+    
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;

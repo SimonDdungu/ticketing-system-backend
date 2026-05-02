@@ -1,7 +1,10 @@
 using System.ComponentModel.DataAnnotations.Schema;
 namespace Ticketing_backend.Models.Orders;
+
+using Microsoft.EntityFrameworkCore;
 using Ticketing_backend.Models.Tickets;
 
+[Index(nameof(OrderId))]
 public class OrderItem
 {
     public Guid Id {get; set;} = Guid.NewGuid();

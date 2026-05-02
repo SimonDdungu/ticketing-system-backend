@@ -58,6 +58,17 @@ public class AuthService : IAuthService
         if (user is null || !await _userManager.CheckPasswordAsync(user, request.Password))
             throw new UnauthorizedAccessException("Invalid email or password.");
 
+        if (user.IsBanned)
+            throw new UnauthorizedAccessException("This account was banned.");
+
+        if (user.IsDeleted)
+        {
+            user.IsDeleted = false;
+            user.DeletedAt = null;
+            user.UpdatedAt = DateTime.UtcNow;
+            await _userManager.UpdateAsync(user);
+        }
+
         return await GenerateAuthResponseAsync(user);
     }
 

@@ -1,3 +1,5 @@
+namespace Ticketing_backend.DTOs.User;
+
 public class BanUserRequest
 {
     public required bool IsBanned { get; set; }
