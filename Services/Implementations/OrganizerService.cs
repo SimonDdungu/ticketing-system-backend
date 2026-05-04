@@ -167,8 +167,7 @@ public class OrganizerService : IOrganizerService
         
         organizer.IsDeleted = request.IsDeleted;
         organizer.DeletedAt = request.IsDeleted ? DateTime.UtcNow : null;
-        organizer.DeletedByUserId = UserId.Value;
-        organizer.UpdatedAt = DateTime.UtcNow;
+        organizer.DeletedByUserId = request.IsDeleted ? UserId.Value : null;
 
         _organizerRepository.Update(organizer);
 
