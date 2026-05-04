@@ -1,4 +1,4 @@
-namespace Ticketing_backend.DTOs.User;
+namespace Ticketing_backend.DTOs.SoftDelete;
 
 public class SoftDeleteRequest
 {

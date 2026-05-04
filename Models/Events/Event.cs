@@ -3,9 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 using Ticketing_backend.Models.Organizers;
 using Ticketing_backend.Models.Tickets;
+using Ticketing_backend.Models.Users;
 namespace Ticketing_backend.Models.Events;
 
-[Index(nameof(Status))]
+[Index(nameof(OrganizerId))]
+
 public class Event
 {
     public Guid Id {get; set;} = Guid.NewGuid();
@@ -13,7 +15,13 @@ public class Event
     public required Guid OrganizerId { get; set; }
     
     [ForeignKey(nameof(OrganizerId))]
-    public Organizer? Organizer {get; set;}
+    public Organizer Organizer { get; set; } = null!;
+
+    public required Guid CreatedByUserId { get; set; }
+
+    public Guid? UpdatedByUserId { get; set; }
+
+    public Guid? DeletedByUserId { get; set; }
 
     [MaxLength(200)]
     public required string Title {get; set;}
@@ -38,6 +46,10 @@ public class Event
 
 
     public EventStatus Status {get; set;} = EventStatus.Draft;
+
+    public bool IsDeleted { get; set; } = false;
+
+    public DateTime? DeletedAt { get; set; }
 
     public ICollection<EventImage> Images { get; set; } = [];
 

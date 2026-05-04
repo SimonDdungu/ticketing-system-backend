@@ -1,5 +1,9 @@
 using Ticketing_backend.DTOs.Event;
+using Ticketing_backend.DTOs.Pagination;
+using Ticketing_backend.DTOs.SoftDelete;
+using Ticketing_backend.Filters;
 using Ticketing_backend.Mappings;
+using Ticketing_backend.Middleware;
 using Ticketing_backend.Models.Events;
 using Ticketing_backend.Repositories.Interfaces;
 using Ticketing_backend.Services.Interfaces;
@@ -12,10 +16,13 @@ public class EventService : IEventService
 
     private readonly IOrganizerRepository _organizerRepository;
 
-    public EventService(IEventRepository eventRepository, IOrganizerRepository organizerRepository)
+    private readonly UserContext _userContext;
+
+    public EventService(IEventRepository eventRepository, IOrganizerRepository organizerRepository, UserContext userContext)
     {
         _eventRepository = eventRepository;
         _organizerRepository = organizerRepository;
+        _userContext = userContext;
     }
 
     public async Task<EventResponse?> GetByIdAsync(Guid id)
@@ -30,12 +37,39 @@ public class EventService : IEventService
         return events.Select(e => e.ToResponse());
     }
 
+    public async Task<PaginatedResponse<EventResponse>> GetFilteredAsync(EventFilter filter)
+    {
+        var result = await _eventRepository.GetFilteredAsync(filter);
+
+        return new PaginatedResponse<EventResponse>
+        {
+            Data = result.Data.Select(o => o.ToResponse()),
+            Page = result.Page,
+            PageSize = result.PageSize,
+            TotalCount = result.TotalCount
+        };
+    }
+
     public async Task<EventResponse> CreateAsync(CreateEventRequest request)
     {
         var organizer = await _organizerRepository.GetByIdAsync(request.OrganizerId);
-        if (organizer is null) throw new KeyNotFoundException($"Organizer with id {request.OrganizerId} not found.");
+        var UserId = _userContext.UserId;
+
+        if (organizer is null) 
+            throw new KeyNotFoundException($"Organizer with id {request.OrganizerId} not found.");
+
+        if(UserId is null)
+        {
+            throw new UnauthorizedAccessException("Only authenticated users can create Events");
+        }
+
+        if (organizer.UserId != UserId && !_userContext.IsStaff)
+            throw new ForbiddenAccessException("You are not allowed to create an event for this organizer.");
+
 
         var e = request.ToModel();
+        e.CreatedByUserId = UserId.Value;
+
         _eventRepository.Add(e);
         await _eventRepository.SaveAsync();
         return e.ToResponse();
@@ -44,9 +78,23 @@ public class EventService : IEventService
     public async Task<EventResponse> UpdateAsync(Guid id, UpdateEventRequest request)
     {
         var e = await _eventRepository.GetByIdAsync(id);
+        var UserId = _userContext.UserId;
+
         if (e is null) throw new KeyNotFoundException($"Event with id {id} not found.");
+
+        if(UserId is null)
+        {
+            throw new UnauthorizedAccessException("Only authenticated users can update Events");
+        }
+
+        if (e.Organizer.UserId != UserId && !_userContext.IsStaff)
+            throw new ForbiddenAccessException("Only the Organizer for this event can make changes.");
+
+
         e.UpdateModel(request);
+        e.UpdatedByUserId = UserId.Value;
         e.UpdatedAt = DateTime.UtcNow;
+
         _eventRepository.Update(e);
         await _eventRepository.SaveAsync();
         return e.ToResponse();
@@ -55,7 +103,19 @@ public class EventService : IEventService
     public async Task DeleteAsync(Guid id)
     {
         var e = await _eventRepository.GetByIdAsync(id);
+        var UserId = _userContext.UserId;
+
         if (e is null) throw new KeyNotFoundException($"Event with id {id} not found.");
+
+        if(UserId is null)
+        {
+            throw new UnauthorizedAccessException("Only authenticated users can delete Events");
+        }
+
+
+         if (e.Organizer.UserId != UserId && !_userContext.IsAdmins)
+            throw new ForbiddenAccessException("Only the Organizer for this event can delete the event.");
+
         _eventRepository.Delete(e);
         await _eventRepository.SaveAsync();
     }
@@ -119,4 +179,31 @@ public class EventService : IEventService
         var events = await _eventRepository.GetAllWithImagesAsync();
         return events.Select(e => e.ToResponse());
     }
+
+    public async Task SoftDeleteAsync(Guid id, SoftDeleteRequest request)
+    {
+        var events = await _eventRepository.GetByIdAsync(id);
+        var UserId = _userContext.UserId;
+
+        if(events is null) throw new KeyNotFoundException($"Event with id {id} can not be found");
+
+        if(UserId is null)
+        {
+            throw new UnauthorizedAccessException("Only authenticated users can delete Events");
+        }
+
+
+        if (events.Organizer.UserId != UserId && !_userContext.IsAdmins)
+            throw new ForbiddenAccessException("Only the Organizer for this event can delete the event.");
+
+        
+        events.IsDeleted = request.IsDeleted;
+        events.DeletedAt = request.IsDeleted ? DateTime.UtcNow : null;
+        events.DeletedByUserId = request.IsDeleted ? UserId.Value : null;
+
+        _eventRepository.Update(events);
+
+        await _eventRepository.SaveAsync();
+    }
+
 }

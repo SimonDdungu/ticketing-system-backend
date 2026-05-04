@@ -1,3 +1,5 @@
+using Ticketing_backend.DTOs.Pagination;
+using Ticketing_backend.Filters;
 using Ticketing_backend.Models.Events;
 namespace Ticketing_backend.Repositories.Interfaces;
 
@@ -22,4 +24,7 @@ public interface IEventRepository : IRepository<Event>
     Task<Event?> GetWithImagesAsync(Guid id);
 
     Task<Event?> GetWithTicketTypesAsync(Guid id);
+
+    Task<PaginatedResponse<Event>> GetFilteredAsync(EventFilter filter);
+
 }

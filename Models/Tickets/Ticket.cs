@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 using Ticketing_backend.Models.Events;
 using Ticketing_backend.Models.Orders;
+using Ticketing_backend.Models.Organizers;
 namespace Ticketing_backend.Models.Tickets;
 
 [Index(nameof(QRCode), IsUnique = true)]
@@ -14,8 +15,17 @@ public class Ticket
     public required Guid TicketTypeId { get; set; } 
     public TicketType? TicketType { get; set; }
 
+    public required string TicketTypeName { get; set; } 
+
     public required Guid EventId { get; set; }
     public Event? Event { get; set; }
+
+    public required string EventName { get; set; }
+
+    public required Guid OrganizerId { get; set; }
+    public Organizer? Organizer { get; set; }
+
+    public required string OrganizerName { get; set; }
 
     public required Guid OrderItemId { get; set; }
     public OrderItem? OrderItem { get; set; }

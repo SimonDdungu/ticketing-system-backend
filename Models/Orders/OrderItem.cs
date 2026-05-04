@@ -13,6 +13,7 @@ public class OrderItem
 
     [ForeignKey(nameof(TicketTypeId))]
     public TicketType? TicketType {get; set;}
+    
 
     public required Guid OrderId {get; set;}
 

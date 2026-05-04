@@ -1,7 +1,9 @@
 using Ticketing_backend.DTOs.Organizer;
 using Ticketing_backend.DTOs.Pagination;
+using Ticketing_backend.DTOs.SoftDelete;
 using Ticketing_backend.Filters;
 using Ticketing_backend.Mappings;
+using Ticketing_backend.Middleware;
 using Ticketing_backend.Repositories.Interfaces;
 using Ticketing_backend.Services.Interfaces;
 
@@ -11,9 +13,12 @@ public class OrganizerService : IOrganizerService
 {
     private readonly IOrganizerRepository _organizerRepository;
 
-    public OrganizerService(IOrganizerRepository organizerRepository)
+    private readonly UserContext _userContext;
+
+    public OrganizerService(IOrganizerRepository organizerRepository, UserContext userContext)
     {
         _organizerRepository = organizerRepository;
+        _userContext = userContext;
     }
 
     public async Task<OrganizerResponse?> GetByIdAsync(Guid id)
@@ -45,10 +50,16 @@ public class OrganizerService : IOrganizerService
 
     public async Task<OrganizerResponse> CreateAsync(CreateOrganizerRequest request)
     {
-        if (request.UserId is null)
-            throw new UnauthorizedAccessException("User must be logged in to create an organizer.");
+        var UserId = _userContext.UserId;
 
-        var organizer = request.ToModel(request.UserId.Value);
+        if(UserId is null)
+        {
+            throw new UnauthorizedAccessException("Only authenticated users can create Organizers");
+        }
+
+        var organizer = request.ToModel();
+
+        organizer.UserId = UserId.Value;
         
         _organizerRepository.Add(organizer);
 
@@ -60,11 +71,22 @@ public class OrganizerService : IOrganizerService
     public async Task<OrganizerResponse> UpdateAsync(Guid id, UpdateOrganizerRequest request)
     {
         var organizer = await _organizerRepository.GetByIdAsync(id);
+        var UserId = _userContext.UserId;
 
         if (organizer is null) throw new KeyNotFoundException($"Organizer with id {id} not found.");
 
-        organizer.UpdateModel(request);
+        if(UserId is null)
+        {
+            throw new UnauthorizedAccessException("Only authenticated users can create Organizers");
+        }
 
+        if(organizer.UserId != UserId && !_userContext.IsStaff)
+        {
+            throw new ForbiddenAccessException("You are not allowed to update this Organizer.");
+        }
+
+        organizer.UpdateModel(request);
+        organizer.UpdatedByUserId = UserId.Value;
         organizer.UpdatedAt = DateTime.UtcNow;
 
         _organizerRepository.Update(organizer);
@@ -77,8 +99,19 @@ public class OrganizerService : IOrganizerService
     public async Task DeleteAsync(Guid id)
     {
         var organizer = await _organizerRepository.GetByIdAsync(id);
+        var UserId = _userContext.UserId;
 
         if (organizer is null) throw new KeyNotFoundException($"Organizer with id {id} not found.");
+
+        if(UserId is null)
+        {
+            throw new UnauthorizedAccessException("Only authenticated users can create Organizers");
+        }
+
+        if(organizer.UserId != UserId && !_userContext.IsAdmins)
+        {
+            throw new ForbiddenAccessException("You are not allowed to delete this Organizer.");
+        }
 
         _organizerRepository.Delete(organizer);
 
@@ -113,9 +146,32 @@ public class OrganizerService : IOrganizerService
         return organizer?.ToResponse();
     }
 
-    public async Task<bool> IsOwnerAsync(Guid organizerId, Guid userId)
+
+    public async Task SoftDeleteAsync(Guid id, SoftDeleteRequest request)
     {
-        var organizer = await _organizerRepository.GetByIdAsync(organizerId);
-        return organizer?.UserId == userId;
+        var organizer = await _organizerRepository.GetByIdAsync(id);
+        var UserId = _userContext.UserId;
+
+        if(organizer is null) throw new KeyNotFoundException($"Organizer with id {id} can not be found");
+
+        
+        if(UserId is null)
+        {
+            throw new UnauthorizedAccessException("Only authenticated users can create Organizers");
+        }
+
+        if(organizer.UserId != UserId && !_userContext.IsAdmins)
+        {
+            throw new ForbiddenAccessException("You are not allowed to delete this Organizer.");
+        }
+        
+        organizer.IsDeleted = request.IsDeleted;
+        organizer.DeletedAt = request.IsDeleted ? DateTime.UtcNow : null;
+        organizer.DeletedByUserId = UserId.Value;
+        organizer.UpdatedAt = DateTime.UtcNow;
+
+        _organizerRepository.Update(organizer);
+
+        await _organizerRepository.SaveAsync();
     }
 }

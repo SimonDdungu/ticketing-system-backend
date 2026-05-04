@@ -17,9 +17,8 @@ public static class OrganizerMappings
         UpdatedAt = organizer.UpdatedAt
     };
 
-    public static Organizer ToModel(this CreateOrganizerRequest request, Guid userId) => new()
+    public static Organizer ToModel(this CreateOrganizerRequest request) => new()
     {
-        UserId = userId,
         Name = request.Name,
         Email = request.Email,
         PhoneNumber = request.PhoneNumber,

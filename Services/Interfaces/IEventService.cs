@@ -1,10 +1,15 @@
 using Ticketing_backend.DTOs.Event;
+using Ticketing_backend.DTOs.Pagination;
+using Ticketing_backend.DTOs.SoftDelete;
+using Ticketing_backend.Filters;
 using Ticketing_backend.Models.Events;
 
 namespace Ticketing_backend.Services.Interfaces;
 
 public interface IEventService : IService<EventResponse, CreateEventRequest, UpdateEventRequest>
 {
+    Task<PaginatedResponse<EventResponse>> GetFilteredAsync(EventFilter filter);
+    
     Task<IEnumerable<EventResponse>> GetByTitleAsync(string title);
 
     Task<IEnumerable<EventResponse>> GetByVenueAsync(string venue);
@@ -24,4 +29,7 @@ public interface IEventService : IService<EventResponse, CreateEventRequest, Upd
     Task<EventResponse?> GetWithTicketTypesAsync(Guid id);
 
     Task<IEnumerable<EventResponse>> GetAllWithImagesAsync();
+
+    Task SoftDeleteAsync(Guid id,  SoftDeleteRequest request);
+
 }

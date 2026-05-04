@@ -34,6 +34,11 @@ public class OrganizerRepository : Repository<Organizer>, IOrganizerRepository
             query = query.OrderByDescending(e => e.CreatedAt); // default sort
         }
 
+        if (filter.IsDeleted.HasValue)
+            query = query.Where(u => u.IsDeleted == filter.IsDeleted.Value);
+
+
+
         var totalCount = await query.CountAsync();
 
         var organizers = await query

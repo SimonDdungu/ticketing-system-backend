@@ -1,8 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 using Ticketing_backend.Models.Events;
 namespace Ticketing_backend.Models.Tickets;
 
+[Index(nameof(EventId))]
 public class TicketType
 {
     public Guid Id {get; set;} = Guid.NewGuid();
@@ -23,6 +25,10 @@ public class TicketType
     public int QuantityAdded { get; set; }
 
     public int QuantityRemaining {get; set;}
+
+    public bool IsDeleted { get; set; } = false;
+
+    public DateTime? DeletedAt { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

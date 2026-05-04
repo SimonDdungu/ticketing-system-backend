@@ -1,6 +1,8 @@
+using Microsoft.EntityFrameworkCore;
 using Ticketing_backend.Models.Users;
 namespace Ticketing_backend.Models.Events;
 
+[Index(nameof(UserId))]
 public class EventStaff
 {
     public Guid Id { get; set; } = Guid.NewGuid();

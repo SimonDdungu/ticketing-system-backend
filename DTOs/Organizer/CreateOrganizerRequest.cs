@@ -20,6 +20,4 @@ public class CreateOrganizerRequest
     public string? Bio { get; set; }
 
     public string? LogoUrl { get; set; }
-
-    public Guid? UserId { get; set; }
 }

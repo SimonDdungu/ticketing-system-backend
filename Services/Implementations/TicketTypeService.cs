@@ -1,3 +1,4 @@
+using Ticketing_backend.DTOs.SoftDelete;
 using Ticketing_backend.DTOs.TicketType;
 using Ticketing_backend.Mappings;
 using Ticketing_backend.Repositories.Interfaces;
@@ -115,5 +116,19 @@ public class TicketTypeService : ITicketTypeService
     {
         var ticketTypes = await _ticketTypeRepository.GetByMaxQuantityRemainingAsync(maxQuantityRemaining);
         return ticketTypes.Select(t => t.ToResponse());
+    }
+
+    public async Task SoftDeleteAsync(Guid id, SoftDeleteRequest request)
+    {
+        var ticketType = await _ticketTypeRepository.GetByIdAsync(id);
+        if(ticketType is null) throw new KeyNotFoundException($"Ticket Type with id {id} can not be found");
+        
+        ticketType.IsDeleted = request.IsDeleted;
+        ticketType.DeletedAt = request.IsDeleted ? DateTime.UtcNow : null;
+        ticketType.UpdatedAt = DateTime.UtcNow;
+
+        _ticketTypeRepository.Update(ticketType);
+
+        await _ticketTypeRepository.SaveAsync();
     }
 }

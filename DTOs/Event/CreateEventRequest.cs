@@ -15,6 +15,9 @@ public class CreateEventRequest
     [Required(ErrorMessage = "Organizer for event is required.")]
     public required Guid OrganizerId { get; set; }
 
+    [Required(ErrorMessage = "User is required.")]
+    public required Guid CreatedByUserId { get; set; }
+
     [Required(ErrorMessage = "Venue for event is required.")]
     [MaxLength(255, ErrorMessage = "Venue cannot exceed 255 characters.")]
     public required string Venue { get; set; }

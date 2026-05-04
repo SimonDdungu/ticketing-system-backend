@@ -1,6 +1,7 @@
 using Ticketing_backend.DTOs.Pagination;
 using Ticketing_backend.DTOs.User;
 using Ticketing_backend.Filters;
+using Ticketing_backend.DTOs.SoftDelete;
 
 namespace Ticketing_backend.Services.Interfaces;
 

@@ -10,7 +10,7 @@ public class Organizer
 {
     public Guid Id {get; set;} = Guid.NewGuid();
 
-    public required Guid UserId { get; set; }
+    public Guid? UserId { get; set; }
 
     [ForeignKey(nameof(UserId))]
     public User? User { get; set; }
@@ -30,6 +30,14 @@ public class Organizer
     public string? LogoUrl {get; set;}
 
     public ICollection<Event> Events { get; set; } = [];
+
+    public Guid? UpdatedByUserId { get; set; }
+
+    public Guid? DeletedByUserId { get; set; }
+
+    public bool IsDeleted { get; set; } = false;
+
+    public DateTime? DeletedAt { get; set; }
 
     public DateTime CreatedAt {get; set;} = DateTime.UtcNow;
 

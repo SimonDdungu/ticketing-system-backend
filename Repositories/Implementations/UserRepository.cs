@@ -40,9 +40,6 @@ public class UserRepository : Repository<User>, IUserRepository
 
         if (filter.IsDeleted.HasValue)
             query = query.Where(u => u.IsDeleted == filter.IsDeleted.Value);
-        else
-            query = query.Where(u => !u.IsDeleted);
-
         
 
         var totalCount = await query.CountAsync();

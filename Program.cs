@@ -28,6 +28,7 @@ builder.Services.AddIdentity<User, IdentityRole<Guid>>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.AddHttpContextAccessor();
 
 // Elastic Search
 builder.Services.AddSingleton<ElasticsearchClient>(sp =>
@@ -39,7 +40,8 @@ builder.Services.AddSingleton<ElasticsearchClient>(sp =>
 });
 
 
-
+// User Context
+builder.Services.AddScoped<UserContext>();
 
 // Repositories
 builder.Services.AddScoped<IOrganizerRepository, OrganizerRepository>();

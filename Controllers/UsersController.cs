@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Ticketing_backend.DTOs.SoftDelete;
 using Ticketing_backend.DTOs.User;
 using Ticketing_backend.Filters;
 using Ticketing_backend.Services.Interfaces;
@@ -22,10 +23,6 @@ public class UsersController : BaseController
     [Authorize(Roles = "Admin,SuperAdmin,Support")]
     public async Task<IActionResult> GetAll([FromQuery] UserFilterRequest filter)
     {
-            if (!IsStaff) 
-                filter.IsDeleted = false;
-                filter.IsBanned = false;
-
             var users = await _userService.GetAllAsync(filter);
 
             return OkResponse(users);
@@ -35,14 +32,7 @@ public class UsersController : BaseController
     [Authorize]
     public async Task<IActionResult> GetById(Guid id)
     {
-            var currentUserId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-
-            if (!IsStaff && currentUserId != id)
-                return Forbid();
-
             var user = await _userService.GetByIdAsync(id);
-
-            if (user is null) return NotFoundResponse($"User with id {id} not found.");
 
             return OkResponse(user);
     }
@@ -51,12 +41,6 @@ public class UsersController : BaseController
     [Authorize]
     public async Task<IActionResult> Update(Guid id, UpdateUserRequest request)
     {
-            var currentUserId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-     
-
-            if (!IsStaff && currentUserId != id)
-                return Forbid();
-
             var user = await _userService.UpdateAsync(id, request);
 
             return OkResponse(user);
@@ -66,11 +50,6 @@ public class UsersController : BaseController
     [Authorize]
     public async Task<IActionResult> SoftDelete(Guid id, SoftDeleteRequest request)
     {
-            var currentUserId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-
-            if (!IsStaff && currentUserId != id)
-                return Forbid();
-
             await _userService.SoftDeleteAsync(id, request);
             
             return OkResponse("User delete status updated successfully.");
@@ -80,11 +59,6 @@ public class UsersController : BaseController
     [Authorize]
     public async Task<IActionResult> Delete(Guid id)
     {
-            var currentUserId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-
-            if (!IsSuperAdmin && currentUserId != id)
-                return Forbid();
-
             await _userService.DeleteAsync(id);
             
             return OkResponse("User permantenly deleted successfully.");
@@ -94,10 +68,8 @@ public class UsersController : BaseController
     [Authorize(Roles = "Admin,SuperAdmin,Support")]
     public async Task<IActionResult> Ban(Guid id, BanUserRequest request)
     {
-         if (!IsStaff)
-                return Forbid();
-
         await _userService.BanAsync(id, request);
+
         return OkResponse("User ban status updated successfully.");
     }
 }

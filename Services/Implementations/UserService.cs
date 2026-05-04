@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Ticketing_backend.DTOs.Pagination;
+using Ticketing_backend.DTOs.SoftDelete;
 using Ticketing_backend.DTOs.User;
 using Ticketing_backend.Filters;
 using Ticketing_backend.Mappings;
+using Ticketing_backend.Middleware;
 using Ticketing_backend.Models.Users;
 using Ticketing_backend.Repositories.Interfaces;
 using Ticketing_backend.Services.Interfaces;
@@ -16,22 +18,47 @@ public class UserService : IUserService
 
     private readonly IUserRepository _userRepository;
 
-    public UserService(UserManager<User> userManager, IUserRepository userRepository)
+    private readonly UserContext _userContext;
+
+    public UserService(UserManager<User> userManager, IUserRepository userRepository, UserContext userContext)
     {
         _userManager = userManager;
 
         _userRepository = userRepository;
+
+        _userContext = userContext;
     }
 
     public async Task<UserResponse?> GetByIdAsync(Guid id)
     {
         var user = await _userManager.FindByIdAsync(id.ToString());
+        var UserId = _userContext.UserId;
+
+
+        if (user is null) throw new KeyNotFoundException($"User with id {id} not found.");
+
+        if(UserId is null)
+        {
+            throw new UnauthorizedAccessException("Only authenticated users can view this User");
+        }
+
+        if (user.Id != UserId && !_userContext.IsStaff)
+            throw new ForbiddenAccessException("You are not allowed to view this User.");
+
 
         return user?.ToResponse();
     }
 
     public async Task<PaginatedResponse<UserResponse>> GetAllAsync(UserFilterRequest filter)
     {
+        var UserId = _userContext.UserId;
+
+        if(UserId is null || !_userContext.IsStaff)
+        {
+            throw new ForbiddenAccessException("You are not authorzied");
+        }
+
+
         var result = await _userRepository.GetAllAsync(filter);
         
         return new PaginatedResponse<UserResponse>
@@ -46,10 +73,20 @@ public class UserService : IUserService
     public async Task<UserResponse> UpdateAsync(Guid id, UpdateUserRequest request)
     {
         var user = await _userManager.FindByIdAsync(id.ToString());
+        var UserId = _userContext.UserId;
+
 
         if (user is null) throw new KeyNotFoundException($"User with id {id} not found.");
 
-        
+        if(UserId is null)
+        {
+            throw new UnauthorizedAccessException("Only authenticated users can update User");
+        }
+
+        if (user.Id != UserId && !_userContext.IsStaff)
+            throw new ForbiddenAccessException("You are not allowed to update this User.");
+
+
 
         if (request.FirstName is not null) user.FirstName = request.FirstName;
 
@@ -59,6 +96,7 @@ public class UserService : IUserService
 
         if (request.PhoneNumber is not null) user.PhoneNumber = request.PhoneNumber;
 
+        user.UpdatedByUserId = UserId.Value;
         user.UpdatedAt = DateTime.UtcNow;
 
         await _userManager.UpdateAsync(user);
@@ -69,8 +107,18 @@ public class UserService : IUserService
     public async Task DeleteAsync(Guid id)
     {
         var user = await _userManager.FindByIdAsync(id.ToString());
+        var UserId = _userContext.UserId;
 
         if (user is null) throw new KeyNotFoundException($"User with id {id} not found.");
+
+        if(UserId is null)
+        {
+            throw new UnauthorizedAccessException("Only authenticated users can update User");
+        }
+
+        if (user.Id != UserId && !_userContext.IsStaff)
+            throw new ForbiddenAccessException("You are not allowed to delete this User.");
+
 
         await _userManager.DeleteAsync(user);
     }
@@ -78,11 +126,22 @@ public class UserService : IUserService
     public async Task SoftDeleteAsync(Guid id, SoftDeleteRequest request)
     {
         var user = await _userManager.FindByIdAsync(id.ToString());
+        var UserId = _userContext.UserId;
+        
         if (user is null) throw new KeyNotFoundException($"User with id {id} not found.");
+
+        if(UserId is null)
+        {
+            throw new UnauthorizedAccessException("Only authenticated users can update User");
+        }
+
+        if (user.Id != UserId && !_userContext.IsStaff)
+            throw new ForbiddenAccessException("You are not allowed to delete this User.");
+
 
         user.IsDeleted = request.IsDeleted;
         user.DeletedAt = request.IsDeleted ? DateTime.UtcNow : null;
-        user.UpdatedAt = DateTime.UtcNow;
+        user.DeletedByUserId = request.IsDeleted ? UserId.Value : null;
 
         await _userManager.UpdateAsync(user);
     }
@@ -90,12 +149,23 @@ public class UserService : IUserService
     public async Task BanAsync(Guid id, BanUserRequest request)
     {
         var user = await _userManager.FindByIdAsync(id.ToString());
+        var UserId = _userContext.UserId;
         
         if (user is null) throw new KeyNotFoundException($"User with id {id} not found.");
 
+        if(UserId is null)
+        {
+            throw new UnauthorizedAccessException("Only authenticated users can update User");
+        }
+
+        if (user.Id != UserId && !_userContext.IsStaff)
+            throw new ForbiddenAccessException("You are not allowed to delete this User.");
+
+
         user.IsBanned = request.IsBanned;
-        user.BanReason = request.Reason;
-        user.UpdatedAt = DateTime.UtcNow;
+        user.BanReason = request.IsBanned ? request.Reason : null;
+        user.BannedByUserId = request.IsBanned ? UserId.Value : null;
+        user.BannedAt = request.IsBanned ? DateTime.UtcNow : null;
 
         await _userManager.UpdateAsync(user);
     }

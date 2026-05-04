@@ -52,6 +52,18 @@ public class AppDbContext: IdentityDbContext<User, IdentityRole<Guid>, Guid>
             .Property(p => p.Status)
             .HasConversion<string>();
 
+        modelBuilder.Entity<Organizer>()
+            .HasOne(o => o.User)
+            .WithMany(u => u.Organizers)
+            .HasForeignKey(o => o.UserId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<Order>()
+            .HasOne(o => o.User)
+            .WithMany()
+            .HasForeignKey(o => o.UserId)
+            .OnDelete(DeleteBehavior.SetNull);
+
 
 
         // Only one event image can be IsPrimary in the database
@@ -59,6 +71,13 @@ public class AppDbContext: IdentityDbContext<User, IdentityRole<Guid>, Guid>
             .HasIndex(i => i.IsPrimary)
             .IsUnique()
             .HasFilter("\"IsPrimary\" = true"); 
+
+
+        // Email is only unique for active users, soft deleted emails can be reused
+        modelBuilder.Entity<User>()
+            .HasIndex(u => u.Email)
+            .IsUnique()
+            .HasFilter("[IsDeleted] = 0");
             
     }
 }
